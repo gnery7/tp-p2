@@ -21,11 +21,3 @@ Este é um sistema de empréstimos desenvolvido em React. A aplicação permite 
 
 - Node.js
 - npm (ou Yarn)
-
-## Como Executar o Projeto
-
-### 1. Clonar o Repositório
-
-```bash
-git clone https://github.com/seu-usuario/sistema-emprestimos.git
-cd sistema-emprestimos
