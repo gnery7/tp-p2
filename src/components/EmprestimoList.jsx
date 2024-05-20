@@ -1,4 +1,3 @@
-// src/components/EmprestimoList.js
 import React from 'react';
 
 const EmprestimoList = ({ emprestimos, onPagar }) => {

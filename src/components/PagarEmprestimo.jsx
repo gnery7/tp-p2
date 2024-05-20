@@ -1,4 +1,3 @@
-// src/components/PagarEmprestimo.js
 import React, { useState } from 'react';
 
 const PagarEmprestimo = ({ emprestimo, onConfirmar }) => {
@@ -9,6 +8,10 @@ const PagarEmprestimo = ({ emprestimo, onConfirmar }) => {
     onConfirmar(senha);
   };
 
+  if (!emprestimo || emprestimo.valor === undefined || emprestimo.valorAtualizado === undefined) {
+    return <div>Carregando informações do empréstimo...</div>;
+  }
+  
   return (
     <div>
       <h2>Pagar Empréstimo</h2>
@@ -22,7 +25,7 @@ const PagarEmprestimo = ({ emprestimo, onConfirmar }) => {
         <button type="submit">Confirmar Pagamento</button>
       </form>
     </div>
-  );
+  );  
 };
 
 export default PagarEmprestimo;
