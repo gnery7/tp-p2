@@ -1,0 +1,73 @@
+.App {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+  background-color: var(--background-color);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); /* Sombra mais proeminente para efeito de elevação */
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.button {
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin: 10px 0;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #0056b3;
+}
+
+.input, select {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.label {
+  margin: 10px 0;
+  font-weight: bold;
+}
+
+.input:focus {
+  border-color: #007BFF;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+  outline: none;
+}
+
+.loan-inputs {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.input {
+  flex-grow: 1;
+  margin-right: 10px;
+}
+
+.add-user {
+  display: block;
+  width: auto;
+  margin: 20px auto;
+  padding: 10px 20px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.add-user:hover {
+  background-color: #0056b3;
+}
