@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import UsuarioSelect from './components/UsuarioSelect';
 import EmprestimoList from './components/EmprestimoList';
 import PagarEmprestimo from './components/PagarEmprestimo';
+import Formulario from './components/CadastrarUsuario';
 
 const sistema = {
   juros: 0.1,
@@ -18,130 +19,89 @@ const sistema = {
     { id: 'id-4', valor: 3, data: new Date("2024-04-15"), credor: "Antonio", devedor: "Maria", valorAtualizado: 3 },
     { id: 'id-5', valor: 18, data: new Date("2024-04-15"), credor: "Joao", devedor: "Maria", valorAtualizado: 18 }
   ],
-  cadastrarEmprestimos(valor, nomeCredor, nomeDevedor) {
-    const novoEmprestimo = {
-      id: `id-${Date.now()}`,
-      valor: parseFloat(valor),
-      data: new Date(),
-      credor: nomeCredor,
-      devedor: nomeDevedor,
-      valorAtualizado: parseFloat(valor)
-    };
-    this.emprestimos.push(novoEmprestimo);
-  },  
   obterEmprestimos(nomeCredor, nomeDevedor) {
-    return this.emprestimos
-      .filter(e => e.credor === nomeCredor && e.devedor === nomeDevedor)
-      .map(e => ({ ...e, valorAtualizado: this.obterValorAtualizado(e) }));
-  },
-  obterValorAtualizado(emprestimo) {
-    let dataAtual = new Date();
-    let diferencaMs = dataAtual - emprestimo.data;
-    let diferencaDias = Math.floor(diferencaMs / (1000 * 60 * 60 * 24));
-    return emprestimo.valor * Math.pow(1 + this.juros, diferencaDias);
-  },
-  pagarEmprestimo(idEmprestimo, senhaCredor) {
-    let emprestimo = this.emprestimos.find(e => e.id === idEmprestimo);
-    if (!emprestimo) {
-      return "Empréstimo não encontrado.";
-    }
-    let credor = this.usuarios.find(usuario => usuario.nome === emprestimo.credor);
-    if (credor && credor.senha === senhaCredor) {
-      let index = this.emprestimos.indexOf(emprestimo);
-      this.emprestimos.splice(index, 1);
-      return `Empréstimo de ${emprestimo.valorAtualizado.toFixed(2)} entre ${emprestimo.credor} e ${emprestimo.devedor} foi pago.`;
-    } else {
-      return "Senha incorreta ou credor não encontrado.";
-    }
-  }  
+    return this.emprestimos.filter(e => e.credor === nomeCredor && e.devedor === nomeDevedor);
+  }
 };
 
 const App = () => {
+  const [usuarios, setUsuarios] = useState(sistema.usuarios);
   const [nomeCredor, setNomeCredor] = useState('');
   const [nomeDevedor, setNomeDevedor] = useState('');
   const [emprestimos, setEmprestimos] = useState([]);
   const [emprestimoSelecionado, setEmprestimoSelecionado] = useState(null);
   const [mensagem, setMensagem] = useState('');
-
-    useEffect(() => {
-      console.log("Emprestimo selecionado:", emprestimoSelecionado);
-  }, [emprestimoSelecionado]);
+  const [exibirFormulario, setExibirFormulario] = useState(false);
 
   const handleCredorChange = (e) => {
-    setNomeCredor(e.target.value);
-    setEmprestimos(sistema.obterEmprestimos(e.target.value, nomeDevedor));
+    const novoCredor = e.target.value;
+    setNomeCredor(novoCredor);
+    if (nomeDevedor) {
+      setEmprestimos(sistema.obterEmprestimos(novoCredor, nomeDevedor));
+    }
   };
 
   const handleDevedorChange = (e) => {
-    setNomeDevedor(e.target.value);
-    setEmprestimos(sistema.obterEmprestimos(nomeCredor, e.target.value));
+    const novoDevedor = e.target.value;
+    setNomeDevedor(novoDevedor);
+    if (nomeCredor) {
+      setEmprestimos(sistema.obterEmprestimos(nomeCredor, novoDevedor));
+    }
   };
 
   const handlePagar = (index) => {
-    setEmprestimoSelecionado(emprestimos[index]);
-};
-  
-const handleConfirmarPagamento = (senha) => {
-  if (!emprestimoSelecionado) {
+    const emprestimo = emprestimos[index];
+    setEmprestimoSelecionado(emprestimo);
+  };
+
+  const handleConfirmarPagamento = (senha) => {
+    if (!emprestimoSelecionado) {
       setMensagem("Nenhum empréstimo selecionado.");
       return;
-  }
-  const mensagem = sistema.pagarEmprestimo(emprestimoSelecionado.id, senha);
-  setMensagem(mensagem);
-  setEmprestimos(sistema.obterEmprestimos(nomeCredor, nomeDevedor));
-  setEmprestimoSelecionado(null);
-};  
-
-  const [valorEmprestimo, setValorEmprestimo] = useState('');
-
-  const handleNovoEmprestimo = () => {
-    if (!nomeCredor || !nomeDevedor || !valorEmprestimo) {
-      setMensagem('Por favor, preencha todos os campos necessários.');
-      return;
     }
-    sistema.cadastrarEmprestimos(valorEmprestimo, nomeCredor, nomeDevedor);
-    setEmprestimos(sistema.obterEmprestimos(nomeCredor, nomeDevedor));
-    setValorEmprestimo('');
-    setMensagem('Empréstimo cadastrado com sucesso!');
+    const usuarioCredor = usuarios.find(u => u.nome === emprestimoSelecionado.credor);
+    if (usuarioCredor && usuarioCredor.senha === senha) {
+      const novosEmprestimos = emprestimos.filter(emp => emp.id !== emprestimoSelecionado.id);
+      setEmprestimos(novosEmprestimos);
+      setMensagem(`Empréstimo de ${emprestimoSelecionado.valorAtualizado.toFixed(2)} pago com sucesso.`);
+      setEmprestimoSelecionado(null);
+    } else {
+      setMensagem("Senha incorreta ou credor não encontrado.");
+    }
   };
 
   return (
     <div>
       <h1>Sistema de Empréstimos</h1>
       <UsuarioSelect
-        usuarios={sistema.usuarios}
+        usuarios={usuarios}
         selecionado={nomeCredor}
         onChange={handleCredorChange}
         tipo="Credor"
       />
       <UsuarioSelect
-        usuarios={sistema.usuarios}
+        usuarios={usuarios}
         selecionado={nomeDevedor}
         onChange={handleDevedorChange}
         tipo="Devedor"
       />
+
+      {exibirFormulario ? (
+        <Formulario usuarios={usuarios} setUsuarios={setUsuarios} setExibirFormulario={setExibirFormulario} />
+      ) : (
+        <button onClick={() => setExibirFormulario(true)}>Não está cadastrado? Cadastre-se</button>
+      )}
+
       <EmprestimoList emprestimos={emprestimos} onPagar={handlePagar} />
       {emprestimoSelecionado && (
-      <PagarEmprestimo
+        <PagarEmprestimo
           emprestimo={emprestimoSelecionado}
           onConfirmar={handleConfirmarPagamento}
-      />
+        />
       )}
-      
-      {mensagem && <p>{mensagem}</p>}
-      <input
-        type="number"
-        value={valorEmprestimo}
-        onChange={(e) => setValorEmprestimo(e.target.value)}
-        placeholder="Valor do Empréstimo"
-      />
-      <button onClick={handleNovoEmprestimo}>Cadastrar Empréstimo</button>
-      {/* se deus quiser aparece a lista de emprestimos aqui */}
       {mensagem && <p>{mensagem}</p>}
     </div>
   );
 };
-
-    
 
 export default App;

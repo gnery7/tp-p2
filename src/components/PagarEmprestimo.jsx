@@ -15,8 +15,8 @@ const PagarEmprestimo = ({ emprestimo, onConfirmar }) => {
   return (
     <div>
       <h2>Pagar Empréstimo</h2>
-      <p>Valor original: {emprestimo.valor.toFixed(2)}</p>
-      <p>Valor atualizado: {emprestimo.valorAtualizado.toFixed(2)}</p>
+      <p>Valor original: R$ {emprestimo.valor.toFixed(2)}</p>
+      <p>Valor atualizado: R$ {emprestimo.valorAtualizado.toFixed(2)}</p>
       <form onSubmit={handleSubmit}>
         <label>
           Senha do credor:

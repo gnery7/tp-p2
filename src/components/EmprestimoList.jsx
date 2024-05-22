@@ -10,9 +10,10 @@ const EmprestimoList = ({ emprestimos, onPagar }) => {
         <ul>
           {emprestimos.map((emprestimo, index) => (
             <li key={index}>
-              Valor original: {emprestimo.valor.toFixed(2)}, 
-              Valor atualizado: {emprestimo.valorAtualizado.toFixed(2)}, 
+              Valor original: R$ {emprestimo.valor.toFixed(2)}, 
+              Valor atualizado: R$ {emprestimo.valorAtualizado.toFixed(2)}, 
               Data: {emprestimo.data.toLocaleDateString()}
+              <view> </view> 
               <button onClick={() => onPagar(index)}>Pagar</button>
             </li>
           ))}
